@@ -38,4 +38,8 @@ public class Laptop {
                 ", releaseDate=" + releaseDate +
                 '}';
     }
+
+    public long getId() {
+        return id;
+    }
 }

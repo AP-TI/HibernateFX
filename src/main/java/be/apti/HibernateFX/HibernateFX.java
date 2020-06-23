@@ -2,13 +2,15 @@ package be.apti.HibernateFX;
 
 import be.apti.HibernateFX.model.Laptop;
 import javafx.application.Application;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
-import javafx.scene.control.Alert;
-import javafx.scene.control.ListView;
+import javafx.scene.control.*;
 import javafx.scene.control.TextField;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
 import org.hibernate.HibernateException;
@@ -55,6 +57,9 @@ public class HibernateFX extends Application {
         textField.setPromptText("Zoeken");
         gridPane.add(textField, 1, 1);
         ListView<Laptop> listView = new ListView<Laptop>();
+
+
+
         listView.setPrefWidth(500);
         gridPane.add(listView, 0, 0);
 
@@ -66,6 +71,13 @@ public class HibernateFX extends Application {
             List<Laptop> result = getLaptopByVendor(textField.getText());
             ObservableList<Laptop> observableList = FXCollections.observableList(result);
             listView.setItems(observableList);
+            ComboBox comboBox = new ComboBox();
+            comboBox.setItems(observableList);
+            comboBox.valueProperty().addListener((ChangeListener<Laptop>) (observableValue, oud, nieuw) -> {
+                ObservableList<Laptop> searchResult = FXCollections.observableList(List.of(nieuw));
+                listView.setItems(searchResult);
+            });
+            gridPane.add(comboBox, 10, 10);
 //            StringBuilder stringBuilder = new StringBuilder();
 //            result.forEach(laptop -> {
 //                stringBuilder.append(laptop.toString() + "\n");
