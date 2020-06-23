@@ -6,11 +6,16 @@ import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
+import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
 import org.hibernate.HibernateException;
@@ -22,6 +27,7 @@ import org.hibernate.cfg.Configuration;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
+import javax.swing.event.DocumentEvent;
 import java.awt.*;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -53,11 +59,27 @@ public class HibernateFX extends Application {
         GridPane gridPane = new GridPane();
         javafx.scene.control.Button button = new javafx.scene.control.Button("Zoek");
         button.setPrefWidth(200.0);
+        button.setPadding(new Insets(10, 10,10 ,10));
+        button.setStyle("-fx-background-color: #c30009; -fx-text-fill: white;");
         javafx.scene.control.TextField textField = new TextField();
         textField.setPromptText("Zoeken");
         gridPane.add(textField, 1, 1);
         ListView<Laptop> listView = new ListView<Laptop>();
-
+        ToggleGroup toggleGroup = new ToggleGroup();
+        RadioButton radioButton = new RadioButton("Hallo");
+        RadioButton radioButton1 = new RadioButton("Hide gridpane");
+        radioButton1.setToggleGroup(toggleGroup);
+        radioButton.setToggleGroup(toggleGroup);
+        GridPane gridPane1 = new GridPane();
+        gridPane1.add(radioButton, 1, 1);
+        gridPane1.add(radioButton1, 1, 2);
+        gridPane.add(gridPane1, 1, 5);
+        radioButton.setOnAction(actionEvent -> {
+            Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+            alert.setHeaderText("U heeft op 'Hallo' gedrukt");
+            alert.show();
+        });
+        radioButton1.setOnAction(actionEvent -> gridPane1.setVisible(false));
 
 
         listView.setPrefWidth(500);
@@ -65,9 +87,7 @@ public class HibernateFX extends Application {
 
 
         button.setOnAction(actionEvent -> {
-//            Alert alert = new Alert(Alert.AlertType.INFORMATION);
-//            alert.setTitle("Geklikt");
-//            alert.setHeaderText("U heeft gezocht");
+            gridPane1.setVisible(true);
             List<Laptop> result = getLaptopByVendor(textField.getText());
             ObservableList<Laptop> observableList = FXCollections.observableList(result);
             listView.setItems(observableList);
@@ -78,13 +98,6 @@ public class HibernateFX extends Application {
                 listView.setItems(searchResult);
             });
             gridPane.add(comboBox, 10, 10);
-//            StringBuilder stringBuilder = new StringBuilder();
-//            result.forEach(laptop -> {
-//                stringBuilder.append(laptop.toString() + "\n");
-//            });
-//            System.out.println(result);
-//            alert.setContentText(stringBuilder.toString());
-//            alert.show();
         });
         gridPane.add(button, 1, 2);
         gridPane.setAlignment(Pos.CENTER);
