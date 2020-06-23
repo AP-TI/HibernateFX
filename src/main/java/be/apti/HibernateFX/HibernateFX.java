@@ -2,9 +2,12 @@ package be.apti.HibernateFX;
 
 import be.apti.HibernateFX.model.Laptop;
 import javafx.application.Application;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
+import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
@@ -51,19 +54,25 @@ public class HibernateFX extends Application {
         javafx.scene.control.TextField textField = new TextField();
         textField.setPromptText("Zoeken");
         gridPane.add(textField, 1, 1);
+        ListView<Laptop> listView = new ListView<Laptop>();
+        listView.setPrefWidth(500);
+        gridPane.add(listView, 0, 0);
+
 
         button.setOnAction(actionEvent -> {
-            Alert alert = new Alert(Alert.AlertType.INFORMATION);
-            alert.setTitle("Geklikt");
-            alert.setHeaderText("U heeft gezocht");
+//            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+//            alert.setTitle("Geklikt");
+//            alert.setHeaderText("U heeft gezocht");
             List<Laptop> result = getLaptopByVendor(textField.getText());
-            StringBuilder stringBuilder = new StringBuilder();
-            result.forEach(laptop -> {
-                stringBuilder.append(laptop.toString() + "\n");
-            });
-            System.out.println(result);
-            alert.setContentText(stringBuilder.toString());
-            alert.show();
+            ObservableList<Laptop> observableList = FXCollections.observableList(result);
+            listView.setItems(observableList);
+//            StringBuilder stringBuilder = new StringBuilder();
+//            result.forEach(laptop -> {
+//                stringBuilder.append(laptop.toString() + "\n");
+//            });
+//            System.out.println(result);
+//            alert.setContentText(stringBuilder.toString());
+//            alert.show();
         });
         gridPane.add(button, 1, 2);
         gridPane.setAlignment(Pos.CENTER);
